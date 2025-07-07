@@ -1,4 +1,4 @@
-# 🛒 Complete Ecommerce Backend
+# 🛒 Bam&Bosey Complete Ecommerce Backend
 
 Reintroducing Bam&Bosey Ecommerce Website. A comprehensive ecommerce backend API built with Node.js, Express.js, Prisma ORM, and PostgreSQL featuring product variants, colors, stock management, and preorder functionality.
 
