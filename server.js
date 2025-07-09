@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const { specs, swaggerUi } = require('./config/swagger');
 require('dotenv').config();
 
 // Import routes
@@ -37,6 +38,32 @@ app.use(limiter);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+// Swagger UI setup
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, {
+  explorer: true,
+  customCss: `
+    .swagger-ui .topbar { display: none }
+    .swagger-ui .info .title { color: #3b82f6 }
+  `,
+  customSiteTitle: "Bam&Bosey API Documentation",
+  customfavIcon: "/favicon.ico",
+  swaggerOptions: {
+    persistAuthorization: true,
+    displayRequestDuration: true,
+    filter: true,
+    showExtensions: true,
+    showCommonExtensions: true,
+    docExpansion: 'none'
+  }
+}));
+
+// Redirect root to API docs for development
+if (process.env.NODE_ENV === 'development') {
+  app.get('/', (req, res) => {
+    res.redirect('/api-docs');
+  });
+}
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ 
@@ -58,8 +85,8 @@ app.use('/api/addresses', addressRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/colors', colorRoutes); // New color management routes
-app.use('/api/preorders', preorderRoutes); // New preorder routes
+app.use('/api/colors', colorRoutes);
+app.use('/api/preorders', preorderRoutes); 
 
 // Error handling middleware
 app.use((err, req, res, next) => {
