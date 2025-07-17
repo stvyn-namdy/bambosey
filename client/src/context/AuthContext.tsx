@@ -1,24 +1,43 @@
 // client/src/context/AuthContext.tsx
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
 import axios from "axios";
 
-type User = { username: string } | null;
+interface User {
+  username: string;
+  isAdmin: boolean;
+}
+
 interface AuthContextType {
-  user: User;
+  user: User | null;
   loading: boolean;
-  login: (u: string, p: string, remember: boolean) => Promise<void>;
+  login: (
+    username: string,
+    password: string,
+    remember: boolean
+  ) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  loading: true,
+  login: async () => {},
+  logout: async () => {},
+});
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User>(null);
+export function AuthProvider({ children }: { children: ReactNode }) {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // on mount, fetch current user
+  // Fetch current user on mount
   useEffect(() => {
     axios.get("/api/auth/user").then((res) => {
       setUser(res.data.user);
@@ -26,16 +45,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  async function login(username: string, password: string, remember: boolean) {
-    await axios.post("/api/auth/login", { username, password, remember });
+  const login = async (
+    username: string,
+    password: string,
+    remember: boolean
+  ) => {
+    await axios.post("/api/auth/login", {
+      username,
+      password,
+      remember,
+    });
+    // re-fetch the user now that we have a token
     const res = await axios.get("/api/auth/user");
     setUser(res.data.user);
-  }
+  };
 
-  async function logout() {
+  const logout = async () => {
     await axios.post("/api/auth/logout");
     setUser(null);
-  }
+  };
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout }}>
@@ -45,7 +73,5 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useAuth() {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error("useAuth must be inside AuthProvider");
-  return ctx;
+  return useContext(AuthContext);
 }
