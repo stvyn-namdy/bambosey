@@ -1,36 +1,93 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bambosey
+
+An e-commerce prototype built with Next.js and Tailwind CSS.
+
+## Features
+
+- **Public Storefront**
+
+  - Full-screen hero banner, featured categories, and “New Arrivals” grid
+  - Dynamic category pages with search + on-demand filter drawer (price, subcategory, color, size)
+  - Product grid components with “Add to Cart” buttons
+
+- **Authentication**
+
+  - `/login` page with username/password + “Remember me”
+  - JWT-based API routes under `/api/auth` (login, logout, current user)
+  - `AuthContext` to expose `user`, `login()`, and `logout()` throughout the app
+  - Header that toggles between “Log In” and “Hi, [user] / Log Out”
+
+- **Shopping Cart**
+
+  - `CartContext` managing `addItem`, `removeItem`, `updateQty`, and computed `total`
+  - Header cart icon with badge showing item count
+  - `CartDrawer` slide-out panel listing cart items, editable quantity inputs, subtotal, “View Cart” and “Checkout” actions
+  - `/cart` page with full cart table, image, name, price, quantity controls, subtotal, grand total, and “Place Order” stub
+  - Empty-cart state linking back to shopping
+
+- **Admin Console**
+  - Protected `/admin` area (requires `isAdmin` in JWT) with custom layout
+  - **User Management**: `/admin/users` table with zebra striping, “Edit”/“Delete” actions (mock API)
+  - **Order Management**: `/admin/orders` list with status badges and “View” action (mock API)
+  - **AI Analytics**: `/admin/analytics` dashboard with bar and line charts powered by Recharts (mock data API)
 
 ## Getting Started
 
-First, run the development server:
+1. **Clone & install**
+   git clone https://github.com/YourUsername/YourRepo.git
+   cd YourRepo/client
+   npm install
+   # or
+   yarn install
 
-```bash
+Add required packages
+
+npm install axios date-fns recharts @types/recharts
+
+# or
+
+yarn add axios date-fns recharts @types/recharts
+
+Set environment variables
+
+Create client/.env.local with at least:
+JWT_SECRET=your-secure-random-secret
+
+Run the development server
+
 npm run dev
+
 # or
+
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Open http://localhost:3000.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Test authentication
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Log in as regular user:
+Username: user  
+Password: pass
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Log in as admin:
+Username: admin  
+Password: pass
 
-## Learn More
+Explore
+Browse products, add to cart, open the drawer or go to /cart.
+As admin (/admin), manage users, orders, and view analytics.
 
-To learn more about Next.js, take a look at the following resources:
+Scripts
+npm run dev — start development server
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+npm run build — build for production
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+npm start — run production build locally
 
-## Deploy on Vercel
+npm run lint — run ESLint
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+npm run format — run Prettier
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Learn More
+Next.js Documentation
+Tailwind CSS
+Recharts
